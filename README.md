@@ -19,8 +19,8 @@
 
 * `GET /api/v1/seats?seats=<[2d array string]>&passengers=<passenger_count>`
 
-- `seats` is a 2d array in string format
-- `passenger` should be a positive int value
+- `seats` parameter is a 2d array in string format
+- `passengers` parameter should be a positive int value
 - `seats` and `passengers` are required parameters
 
 ## Samples
