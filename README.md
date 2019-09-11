@@ -16,12 +16,21 @@
 1. run test by typing `rspec .`
 
 ## How to use the api
+
+* `GET /api/v1/seats?seats=<[2d array string]>&passengers=<passenger_count>`
+
+- `seats` is a 2d array in string format
+- `passenger` should be a positive int value
+- `seats` and `passengers` are required parameters
+
+## Samples
+
 1. via curl
   * `curl -X GET 'http://localhost:3000/v1/seats' -d 'seats=[[2,3],[3,4],[3,2],[4,3]]&passengers=30'`
-2. you can also get the response via browser by adding `seats` and `passenger` parameters on the url endpoint
+2. via url browser
   * `http://localhost:3000/v1/seats?seats=[[2,3],[3,4],[3,2],[4,3]]&passengers=30`
 
-# Response
+## Response
 ```json
 [
   [
@@ -40,4 +49,4 @@
 ```
 
 # How to read api response
-The response is a 3 Dimentional Array. The outer array are the rows, 2nd inner array are the seat groups and lastly the inner array are the seat columns. The `X` values on last innner array are empty seats while the null values 2nd inner array are non-exisiting seats.
+The response is a 3 Dimentional Array. The outer array are the rows, 2nd inner array are the seat groups and lastly the inner array are the seat columns. The `X` values on last innner array are empty seats while the null values 2nd inner array means there are no seats on that row and group.
