@@ -48,4 +48,4 @@
 ```
 
 # How to read api response
-The response is a 3 Dimentional Array. The outer array are the rows, 2nd inner array are the seat groups and lastly the inner array are the seat columns. The `X` values on last innner array are empty seats while the null values 2nd inner array means there are no seats on that row and group.
+The response is a 3 Dimentional Array. The outer array are the rows, 2nd inner array are the seat groups and lastly the inner array are the seat columns. The `X` values on last innner array are empty seats while the `null` values 2nd inner array means there are no seats on that row and group.
