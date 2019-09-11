@@ -17,7 +17,7 @@
 
 ## How to use the api
 1. via curl
-  * `curl -X GET 'http://localhost:3000/v1/seats' -d 'seats=[[3,4],[4,5],[2,3],[3,4]]&passengers=30'`
+  * `curl -X GET 'http://localhost:3000/v1/seats' -d 'seats=[[2,3],[3,4],[3,2],[4,3]]&passengers=30'`
 2. you can also get the response via browser by adding `seats` and `passenger` parameters on the url endpoint
   * `http://localhost:3000/v1/seats?seats=[[2,3],[3,4],[3,2],[4,3]]&passengers=30`
 
@@ -25,19 +25,16 @@
 ```json
 [
   [
-    [19,25,26,1],[2,27,28,29,3],[4,30,5],[6,"X","X",20]
+    [19,25,1],[2,26,27,3],[4,5],[6,28,20]
   ],
   [
-    [21,"X","X",7],[8,"X","X","X",9],[10,"X",11],[12,"X","X",22]
+    [21,29,7],[8,30,"X",9],[10,11],[12,"X",22]
   ],
   [
-    [23,"X","X",13],[14,"X","X","X",15],null,[16,"X","X",24]
+    null,[13,"X","X",14],[15,16],[17,"X",23]
   ],
   [
-    null,[17,"X","X","X",18],null,null
-  ],
-  [
-    null,null,null,null
+    null,null,null,[18,"X",24]
   ]
 ]
 ```
