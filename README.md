@@ -17,8 +17,7 @@
 
 ## How to use the api
 
-* `GET /api/v1/seats?seats=<[2d array string]>&passengers=<passenger_count>`
-
+- `GET /api/v1/seats?seats=<[2d array string]>&passengers=<passenger_count>`
 - `seats` parameter is a 2d array in string format
 - `passengers` parameter should be a positive int value
 - `seats` and `passengers` are required parameters
