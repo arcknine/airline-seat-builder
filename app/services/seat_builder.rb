@@ -30,22 +30,26 @@ class SeatBuilder
     end
 
     begin
-      unless @seat_array.all? { |e| e.class == Array }
-        @errors[:argument1] = 'invalid 2d array.'
-      end
-
-      max_seats = @seat_array.inject(0) { |sum, x| sum + x[0] * x[1] }
-      if max_seats < @total_passengers
-        @errors[:argument2] = 'exceed the number of seats.'
-      end
-    rescue
+      validate_2d_array_and_max_seats
+    rescue NoMethodError
       @errors[:argument1] = 'invalid 2d array.'
     end
 
-    @errors.empty? ? true : false
+    @errors.empty?
   end
 
   private
+
+  def validate_2d_array_and_max_seats
+    unless @seat_array.all? { |e| e.class == Array }
+      @errors[:argument1] = 'invalid 2d array.'
+    end
+
+    max_seats = @seat_array.inject(0) { |sum, x| sum + x[0] * x[1] }
+    return unless max_seats < @total_passengers
+
+    @errors[:argument2] = 'exceed the number of seats.'
+  end
 
   def build_seats
     @built_seats = []
@@ -63,32 +67,38 @@ class SeatBuilder
   def set_aisle_seats
     @sorted_seats.each_with_index do |row, row_index|
       row.each_with_index do |group, group_index|
-        next if group.nil?
+        next if group.nil? || !remaining_seats?
 
-        if group == row.first && remaining_seats?
-          allocate_seat(row_index, group_index, group.count - 1)
-        elsif group == row.last && remaining_seats?
-          allocate_seat(row_index, group_index, 0)
-        elsif remaining_seats?
-          allocate_seat(row_index, group_index, 0)
-          if group.count > 1 && remaining_seats?
-            allocate_seat(row_index, group_index, group.count - 1)
-          end
+        if [row.first, row.last].include?(group)
+          window_aisle_groups(row, row_index, group, group_index)
+        else
+          middle_aisle_group(row_index, group, group_index)
         end
-
       end
     end
+  end
+
+  def window_aisle_groups(*args)
+    index = args[2] == args[0].first ? -1 : 0
+    allocate_seat(args[1], args[3], index)
+  end
+
+  def middle_aisle_group(row_index, group, group_index)
+    allocate_seat(row_index, group_index, 0)
+    return if group.count <= 1 && !remaining_seats?
+
+    allocate_seat(row_index, group_index, group.count - 1)
   end
 
   def set_window_seats
     @sorted_seats.each_with_index do |row, row_index|
       row.each_with_index do |group, group_index|
-        next if group.nil?
+        next if group.nil? || !remaining_seats?
 
-        if group == row.first && remaining_seats?
+        if group == row.first
           allocate_seat(row_index, group_index, 0)
-        elsif group == row.last && remaining_seats?
-          allocate_seat(row_index, group_index, group.count - 1)
+        elsif group == row.last
+          allocate_seat(row_index, group_index, -1)
         end
       end
     end

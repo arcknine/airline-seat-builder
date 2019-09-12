@@ -93,37 +93,76 @@ describe SeatBuilder do
       context 'create seat and allocate passengers in queue' do
         describe 'method#set_aisle_seats' do
           let(:arg1) { [[2,3], [3,4], [3,2], [4,3]] }
-          let(:arg2) { 6 }
-          let(:aisle_seats) { [['X','X',1], [2,'X','X',3],[4,5],[6,'X','X']] }
+          let(:arg2) { 30 }
+          let(:aisle_seats) { (1..18).to_a }
 
           it "should set the correct aisle seats to the queued passangers" do
             seater = SeatBuilder.new(arg1, arg2)
             seater.build
-            expect(seater.allocated_seats.first).to eq(aisle_seats)
+
+            aisle_seat_array = []
+            seater.allocated_seats.each do |row|
+              row.each do |group|
+                next if group.nil?
+
+                if [row.first, row.last].include?(group)
+                  index = group == row.first ? -1 : 0
+                  aisle_seat_array << group.values_at(index)
+                else
+                  aisle_seat_array << group.values_at(0, -1)
+                end
+              end
+            end
+
+            expect(aisle_seat_array.flatten!).to eq(aisle_seats)
           end
         end
 
         describe 'method#set_window_seats' do
           let(:arg1) { [[2,3], [3,4], [3,2], [4,3]] }
-          let(:arg2) { 20 }
-          let(:window_seats) { [[19,'X',1],[2,'X','X',3],[4,5],[6,'X',20]] }
+          let(:arg2) { 30 }
+          let(:window_seats) { (19..24).to_a }
 
           it "should set the correct window seats to the queued passangers" do
             seater = SeatBuilder.new(arg1, arg2)
             seater.build
-            expect(seater.allocated_seats.first).to eq(window_seats)
+            window_seats_array = []
+            seater.allocated_seats.each do |row|
+              row.each do |group|
+                next if group.nil?
+
+                if [row.first, row.last].include?(group)
+                  index = group == row.first ? 0 : -1
+                  window_seats_array << group[index]
+                end
+              end
+            end
+
+            expect(window_seats_array).to eq(window_seats)
           end
         end
 
         describe 'method#set_center_seats' do
           let(:arg1) { [[2,3], [3,4], [3,2], [4,3]] }
           let(:arg2) { 30 }
-          let(:center_seats) { [[19,25,1],[2,26,27,3],[4,5],[6,28,20]] }
+          let(:center_seats) { (25..30).to_a }
 
           it "should set the correct center seats to the queued passangers" do
             seater = SeatBuilder.new(arg1, arg2)
             seater.build
-            expect(seater.allocated_seats.first).to eq(center_seats)
+            center_seats_array = []
+            seater.allocated_seats.each do |row|
+              row.each do |group|
+                next if group.nil? || group.count < 3
+
+                group.each_with_index do |column, index|
+                  next if column ==  'X'
+                  center_seats_array << column unless [0, group.size - 1].include?(index)
+                end
+              end
+            end
+
+            expect(center_seats_array).to eq(center_seats)
           end
         end
       end
